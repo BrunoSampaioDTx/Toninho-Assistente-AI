@@ -2,6 +2,25 @@
 
 Chrome/Edge extension (Manifest V3) that opens a chat widget per tab. The chat sees the page context and its form fields, asks your backend's LLM for help, and lets you apply the field values it proposes.
 
+![Toninho chat widget](docs/chat-widget.png)
+
+## Features
+
+- **One chat per tab.** Click the toolbar icon to open the assistant (Toninho) on the current page. Each tab keeps its own conversation, and the conversation survives navigation within that tab.
+- **Form filling.** The assistant reads the visible form fields and proposes values. You review each one and click **Aplicar** to apply it, or **Aplicar tudo** to apply them all. Nothing is filled automatically.
+- **Decision support.** You can ask the assistant to compare options on the page and recommend one. It uses the page text, any text you have selected, and the form fields.
+- **Page screenshot.** When the 📷 toggle is on, a screenshot of the visible area is sent with each message, so vision models can see the page.
+- **Attachments.** Use 📎 to attach images, text files (txt, csv, json, md), PDF or Word (.docx). Documents are converted to text in the browser.
+- **Voice.** Hold the 🎤 button to dictate in pt-PT. Use **Ouvir** on a reply to have it read aloud.
+- **Formatted replies.** Assistant replies render as Markdown, including headings, lists, tables and code.
+- **Flexible layout.**
+  - Minimize the chat to a round button in the bottom-right corner.
+  - Resize it by dragging the top or left edges, or the top-left corner. Double-click the corner to reset the size.
+- **Dark tactical theme.** The widget runs inside a Shadow DOM, so page styles do not affect it.
+- **Backend.**
+  - Works with any OpenAI-compatible endpoint, such as vLLM, Ollama, OpenAI or Azure.
+  - Can also use your own backend contract, described in [Custom backend contract](#custom-backend-contract).
+
 ## Development
 
 ```bash
