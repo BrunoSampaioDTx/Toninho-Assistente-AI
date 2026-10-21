@@ -4,6 +4,41 @@ Chrome/Edge extension (Manifest V3) that opens a chat widget per tab. The chat s
 
 ![Toninho chat widget](docs/chat-widget.png)
 
+## 🧠 Conheçam o Toninho
+
+O Toninho é aquele colega sabichão que sabe sempre tudo e que nunca se cansa de ajudar. Mora no canto do browser e aparece quando chamado.
+
+**O que o Toninho faz por ti:**
+
+- 📝 **Preenche formulários chatos.** Lê os campos da página e sugere o que lá vai. Tu dás uma vista de olhos e carregas em **Aplicar**. Não preenche nada sem a tua autorização, porque é sabichão mas é educado.
+- 🤔 **Ajuda-te a decidir.** Três planos, cinco opções, uma tabela que mete medo? Pergunta-lhe qual é o melhor e ele explica porquê.
+- 👀 **Vê o que tu vês.** Com o 📷 ligado, espreita o ecrã para perceber do que estás a falar.
+- 📎 **Lê os teus papéis.** Atira-lhe um PDF, um Word, uma imagem ou um CSV e ele trata do resto.
+- 🎤 **Ouve e fala.** Mantém o microfone carregado e dita em português. Se tiveres preguiça de ler, carrega em **Ouvir** e ele lê-te a resposta.
+- 🗂️ **Não mistura assuntos.** Cada separador tem a sua conversa, por isso o que falas numa página não vai parar a outra.
+
+Resumindo: é um estagiário que leu a internet toda, não pede café e não se queixa das segundas-feiras. ☕🚫
+
+## 📦 Como instalar a partir do zip
+
+1. **Extrai o zip** (`llm-form-assistant-vX.Y.Z.zip`) para uma pasta fixa, por exemplo `C:\Extensoes\Toninho`.
+   ⚠️ **Não apagues essa pasta depois.** O browser carrega a extensão a partir dela.
+2. Abre a página de extensões:
+   - Chrome: `chrome://extensions`
+   - Edge: `edge://extensions`
+3. Liga o **Modo de programador** (Developer mode). No Chrome está no canto superior direito e no Edge no menu lateral.
+4. Carrega em **Load unpacked** (Carregar descompactada) e escolhe a pasta extraída, a que tem o ficheiro `manifest.json`.
+5. **Afixa o Toninho na barra:** clica no ícone do puzzle 🧩 e depois no pin 📌 ao lado do LLM Form Assistant.
+6. **Configura-o:** clica com o botão direito no ícone e escolhe **Opções**. Preenche:
+   - **Formato da API:** normalmente *OpenAI-compatible*.
+   - **URL do endpoint:** o endereço do LLM que te passarem, ex. `https://llm.exemplo.com/v1/chat/completions`.
+   - **Token:** se for preciso.
+   - **Modelo:** se for preciso.
+7. **Grava** e aceita o pedido de permissão para o browser falar com esse endereço.
+8. Vai a uma página qualquer, clica no ícone e diz olá ao Toninho 👋
+
+**Para atualizar:** quando chegar um zip novo, substitui o conteúdo da pasta pela versão nova. Depois, em `chrome://extensions`, carrega no 🔄 da extensão e faz F5 nas páginas que já estavam abertas. As tuas configurações mantêm-se.
+
 ## Features
 
 - **One chat per tab.** Click the toolbar icon to open the assistant (Toninho) on the current page. Each tab keeps its own conversation, and the conversation survives navigation within that tab.

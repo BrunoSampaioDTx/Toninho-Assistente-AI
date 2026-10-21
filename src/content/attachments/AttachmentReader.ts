@@ -32,7 +32,7 @@ function readAsDataUrl(file: File): Promise<string> {
   });
 }
 
-/** Images are kept as data URLs; text, PDF and Word files are converted to plain text in the browser. */
+/** Images are kept as data URLs; text and PDF files are converted to plain text and Word files to Markdown in the browser. */
 export class FileAttachmentReader implements AttachmentReader {
   readonly accept = [...IMAGE_TYPES, ...TEXT_EXTENSIONS, PDF_EXTENSION, DOCX_EXTENSION].join(',');
 

@@ -50,7 +50,7 @@ export function buildSystemPrompt({ page, fields }: Pick<ChatRequest, 'page' | '
     `Page title: ${page.title}`,
     page.selectedText ? `User-selected text:\n${page.selectedText}` : '',
     `Form fields (JSON):\n${JSON.stringify(fields)}`,
-    `Visible page text (truncated):\n${page.text}`,
+    `Visible page content as Markdown (truncated):\n${page.text}`,
   ]
     .filter(Boolean)
     .join('\n');
