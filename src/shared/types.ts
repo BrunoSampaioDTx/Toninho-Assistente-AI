@@ -51,8 +51,8 @@ export interface ChatRequest {
   messages: Omit<ChatMessage, 'actions'>[];
   page: PageContext;
   fields: FormField[];
-  /** JPEG data URL of the visible tab area, for the current turn only. */
-  screenshot?: string;
+  /** JPEG data URLs of the whole page, top to bottom, for the current turn only. */
+  screenshots?: string[];
 }
 
 /** Response body expected from the backend. */

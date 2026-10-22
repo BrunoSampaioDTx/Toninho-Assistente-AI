@@ -1,8 +1,8 @@
 import { sendToBackground } from '../../shared/messages';
 
 export interface Screenshotter {
-  /** Returns a JPEG data URL of the visible tab area, without the widget. */
-  capture(): Promise<string>;
+  /** Returns JPEG data URLs of the whole page, top to bottom, without the widget. */
+  capture(): Promise<string[]>;
 }
 
 const nextPaint = () =>
@@ -11,12 +11,12 @@ const nextPaint = () =>
 export class TabScreenshotter implements Screenshotter {
   constructor(private readonly widgetHost: HTMLElement) {}
 
-  async capture(): Promise<string> {
+  async capture(): Promise<string[]> {
     const previous = this.widgetHost.style.visibility;
     this.widgetHost.style.visibility = 'hidden';
     try {
       await nextPaint();
-      return await sendToBackground({ type: 'CAPTURE_VISIBLE_TAB' });
+      return await sendToBackground({ type: 'CAPTURE_PAGE' });
     } finally {
       this.widgetHost.style.visibility = previous;
     }

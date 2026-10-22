@@ -245,6 +245,7 @@ header {
   font-size: 11px;
 }
 .listen:hover { color: var(--accent); border-color: var(--accent); }
+.listen + .listen { margin-left: 6px; }
 
 .typing { display: flex; gap: 4px; padding: 12px 14px; }
 .typing span {

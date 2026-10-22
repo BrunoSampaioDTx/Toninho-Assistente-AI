@@ -63,10 +63,10 @@ interface OpenAiMessage {
   content: string | ContentPart[];
 }
 
-/** Maps history to OpenAI messages; attachments and the screenshot become content parts. */
+/** Maps history to OpenAI messages; attachments and the screenshots become content parts. */
 export function toOpenAiMessages(
   messages: Omit<ChatMessage, 'actions'>[],
-  screenshot?: string,
+  screenshots: string[] = [],
 ): OpenAiMessage[] {
   const lastUser = messages.map((m) => m.role).lastIndexOf('user');
   return messages.map((message, i) => {
@@ -77,9 +77,9 @@ ${a.text}` });
       else if (a.dataUrl) parts.push({ type: 'image_url', image_url: { url: a.dataUrl } });
       else parts.push({ type: 'text', text: `[Image "${a.name}" was attached earlier and is no longer available]` });
     }
-    if (i === lastUser && screenshot) {
-      parts.push({ type: 'text', text: 'Screenshot of the visible part of the page:' });
-      parts.push({ type: 'image_url', image_url: { url: screenshot } });
+    if (i === lastUser && screenshots.length > 0) {
+      parts.push({ type: 'text', text: `Screenshot of the page, in ${screenshots.length} part(s) from top to bottom:` });
+      for (const url of screenshots) parts.push({ type: 'image_url', image_url: { url } });
     }
     if (parts.length === 0) return { role: message.role, content: message.content };
     return { role: message.role, content: [{ type: 'text', text: message.content }, ...parts] };
@@ -104,7 +104,7 @@ export class OpenAiCompatibleProvider implements ChatProvider {
         ...(model ? { model } : {}),
         messages: [
           { role: 'system', content: buildSystemPrompt(request) },
-          ...toOpenAiMessages(request.messages, request.screenshot),
+          ...toOpenAiMessages(request.messages, request.screenshots),
         ],
         tools: [FILL_TOOL],
         tool_choice: 'auto',

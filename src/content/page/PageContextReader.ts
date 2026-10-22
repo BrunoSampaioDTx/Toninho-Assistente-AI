@@ -1,7 +1,7 @@
 import type { PageContext } from '../../shared/types';
 import { htmlToMarkdown } from '../htmlToMarkdown';
 
-const MAX_TEXT_LENGTH = 12000;
+const MAX_TEXT_LENGTH = 50_000;
 
 export interface PageContextReader {
   read(): PageContext;

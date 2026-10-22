@@ -26,7 +26,7 @@ describe('toOpenAiMessages', () => {
           ],
         },
       ],
-      'data:image/jpeg;base64,SS',
+      ['data:image/jpeg;base64,S1', 'data:image/jpeg;base64,S2'],
     );
 
     expect(result[0].content).toEqual([
@@ -38,8 +38,9 @@ describe('toOpenAiMessages', () => {
       { type: 'text', text: 'second' },
       { type: 'text', text: 'Attached file "a.txt":\nhello' },
       { type: 'image_url', image_url: { url: 'data:image/png;base64,AA' } },
-      { type: 'text', text: 'Screenshot of the visible part of the page:' },
-      { type: 'image_url', image_url: { url: 'data:image/jpeg;base64,SS' } },
+      { type: 'text', text: 'Screenshot of the page, in 2 part(s) from top to bottom:' },
+      { type: 'image_url', image_url: { url: 'data:image/jpeg;base64,S1' } },
+      { type: 'image_url', image_url: { url: 'data:image/jpeg;base64,S2' } },
     ]);
   });
 });
@@ -65,10 +66,10 @@ describe('ChatService', () => {
       attachments: [{ kind: 'image', name: 'x.png', dataUrl: 'data:image/png;base64,AA' }],
       page: { url: 'u', title: 't', selectedText: '', text: '' },
       fields: [],
-      screenshot: 'data:image/jpeg;base64,SS',
+      screenshots: ['data:image/jpeg;base64,SS'],
     });
 
-    expect(sent?.screenshot).toBe('data:image/jpeg;base64,SS');
+    expect(sent?.screenshots).toEqual(['data:image/jpeg;base64,SS']);
     expect(sent?.messages[0].attachments).toEqual([{ kind: 'image', name: 'x.png', dataUrl: 'data:image/png;base64,AA' }]);
     expect(state.messages[0].attachments).toEqual([{ kind: 'image', name: 'x.png' }]);
     expect(state.messages[1]).toEqual({ role: 'assistant', content: 'done', actions: [] });

@@ -16,8 +16,8 @@ export default defineManifest({
     },
   ],
   options_page: 'src/options/index.html',
-  permissions: ['storage'],
-  // Required by chrome.tabs.captureVisibleTab for the per-message screenshot.
+  // `debugger` captures the full-page screenshot through the DevTools protocol.
+  permissions: ['storage', 'debugger'],
   host_permissions: ['<all_urls>'],
   // Requested at runtime for the configured backend origin only.
   optional_host_permissions: ['http://*/*', 'https://*/*'],

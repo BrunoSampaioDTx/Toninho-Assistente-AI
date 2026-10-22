@@ -12,7 +12,8 @@ O Toninho é aquele colega sabichão que sabe sempre tudo e que nunca se cansa d
 
 - 📝 **Preenche formulários chatos.** Lê os campos da página e sugere o que lá vai. Tu dás uma vista de olhos e carregas em **Aplicar**. Não preenche nada sem a tua autorização, porque é sabichão mas é educado.
 - 🤔 **Ajuda-te a decidir.** Três planos, cinco opções, uma tabela que mete medo? Pergunta-lhe qual é o melhor e ele explica porquê.
-- 👀 **Vê o que tu vês.** Com o 📷 ligado, espreita o ecrã para perceber do que estás a falar.
+- 👀 **Vê a página toda.** Com o 📷 ligado, tira um print da página inteira (não só do que está no ecrã) para perceber do que estás a falar.
+- 📋 **Copia em Markdown.** O botão **Copiar** por baixo de cada resposta copia-a já formatada em Markdown, pronta a colar onde quiseres.
 - 📎 **Lê os teus papéis.** Atira-lhe um PDF, um Word, uma imagem ou um CSV e ele trata do resto.
 - 🎤 **Ouve e fala.** Mantém o microfone carregado e dita em português. Se tiveres preguiça de ler, carrega em **Ouvir** e ele lê-te a resposta.
 - 🗂️ **Não mistura assuntos.** Cada separador tem a sua conversa, por isso o que falas numa página não vai parar a outra.
@@ -44,7 +45,8 @@ Resumindo: é um estagiário que leu a internet toda, não pede café e não se 
 - **One chat per tab.** Click the toolbar icon to open the assistant (Toninho) on the current page. Each tab keeps its own conversation, and the conversation survives navigation within that tab.
 - **Form filling.** The assistant reads the visible form fields and proposes values. You review each one and click **Aplicar** to apply it, or **Aplicar tudo** to apply them all. Nothing is filled automatically.
 - **Decision support.** You can ask the assistant to compare options on the page and recommend one. It uses the page text, any text you have selected, and the form fields.
-- **Page screenshot.** When the 📷 toggle is on, a screenshot of the visible area is sent with each message, so vision models can see the page.
+- **Full-page screenshot.** When the 📷 toggle is on, a screenshot of the whole page is sent with each message, so vision models can see the page.
+- **Copy as Markdown.** The **Copiar** button under each reply copies its raw Markdown.
 - **Attachments.** Use 📎 to attach images, text files (txt, csv, json, md), PDF or Word (.docx). Documents are converted to text in the browser.
 - **Voice.** Hold the 🎤 button to dictate in pt-PT. Use **Ouvir** on a reply to have it read aloud.
 - **Formatted replies.** Assistant replies render as Markdown, including headings, lists, tables and code.
@@ -107,7 +109,11 @@ src/
 - **Field ids.** The scanner tags each control with `data-lfa-id`. Ids are only valid for the current page load, so suggestions restored after a navigation are shown read-only.
 - **Filling.** Values are set through native prototype setters, followed by `input` and `change` events, so React/Vue/Angular-controlled inputs register the change. Nothing is filled without the user clicking **Apply**.
 - **Excluded fields.** Hidden, disabled and read-only fields are never sent to the backend, and neither are password and file inputs.
-- **Screenshot.** When the 📷 toggle is on (the default), each message includes a JPEG of the visible tab area, captured with `chrome.tabs.captureVisibleTab` while the widget is hidden. It is sent only with the current turn and never stored. The model must support image input.
+- **Screenshot.** When the 📷 toggle is on (the default), each message includes JPEGs of the whole page, captured while the widget is hidden.
+  - Capture uses the DevTools protocol (`chrome.debugger`, `Page.captureScreenshot` with `captureBeyondViewport`), like DevTools "Capture full size screenshot". Chrome shows a "started debugging this browser" bar while it runs.
+  - The page is split into viewport-high tiles, at most 6, because models downscale tall images until text is unreadable. Content below the last tile is still covered by the page Markdown.
+  - Images are sent only with the current turn and never stored. The model must support image input.
+- **Page text.** The main content (`main`/`[role=main]`, else `body`) is converted to Markdown, keeping headings, lists and tables. Navigation, footers, hidden elements and form controls are skipped, and the result is limited to 50,000 characters.
 - **Attachments (📎).**
   - Images (png, jpg, webp, gif) are sent as `image_url` parts.
   - Text files (txt, csv, json, md), PDF (`pdfjs-dist`) and Word `.docx` (`mammoth`) are converted to text in the browser. Each file is limited to 10 MB, and the extracted text to 50,000 characters.
@@ -131,8 +137,8 @@ Request:
       ]
     }
   ],
-  "screenshot": "data:image/jpeg;base64,... (optional, current turn only)",
-  "page": { "url": "https://...", "title": "...", "selectedText": "", "text": "visible page text, max 8000 chars" },
+  "screenshots": ["data:image/jpeg;base64,... (optional, current turn only, page tiles from top to bottom)"],
+  "page": { "url": "https://...", "title": "...", "selectedText": "", "text": "page content as Markdown, max 50000 chars" },
   "fields": [
     {
       "id": "f1", "tag": "input", "type": "text", "name": "company", "label": "Company name",

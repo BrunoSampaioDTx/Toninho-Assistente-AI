@@ -7,11 +7,13 @@ import { TabScreenshotter } from './page/Screenshotter';
 import { WebSpeechInput } from './speech/SpeechInput';
 import { BrowserSpeechOutput } from './speech/SpeechOutput';
 import { ChatWidget } from './ui/ChatWidget';
+import { isolateEvents } from './ui/isolateEvents';
 import styles from './ui/styles.css?inline';
 
 // Closed shadow root isolates the widget from page CSS and scripts.
 const host = document.createElement('lfa-assistant');
 const shadow = host.attachShadow({ mode: 'closed' });
+isolateEvents(host);
 const style = document.createElement('style');
 style.textContent = styles;
 const container = document.createElement('div');

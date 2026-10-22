@@ -13,8 +13,10 @@ import type { SpeechOutput } from '../speech/SpeechOutput';
 import {
   CameraIcon,
   ChatIcon,
+  CheckIcon,
   ClipIcon,
   CloseIcon,
+  CopyIcon,
   FileIcon,
   ImageIcon,
   MicIcon,
@@ -77,6 +79,7 @@ export function ChatWidget({
   const [includeScreenshot, setIncludeScreenshot] = useState(true);
   const [listening, setListening] = useState(false);
   const [speakingIndex, setSpeakingIndex] = useState<number | null>(null);
+  const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const fieldLabels = useRef(new Map<string, string>());
   const listRef = useRef<HTMLDivElement>(null);
@@ -120,7 +123,7 @@ export function ChatWidget({
     setError(null);
     setBusy(true);
     try {
-      const screenshot = includeScreenshot ? await screenshotter.capture() : undefined;
+      const screenshots = includeScreenshot ? await screenshotter.capture() : undefined;
       setInput('');
       setAttachments([]);
       setMessages((m) => [...m, { role: 'user', content: text, attachments: sent }]);
@@ -130,7 +133,7 @@ export function ChatWidget({
         attachments: sent,
         page: contextReader.read(),
         fields,
-        screenshot,
+        screenshots,
       });
       setMessages((m) => [...m, reply]);
     } catch (e) {
@@ -204,6 +207,16 @@ export function ChatWidget({
     }
     setSpeakingIndex(index);
     speechOutput.speak(text, () => setSpeakingIndex((current) => (current === index ? null : current)));
+  }
+
+  async function copy(index: number, markdown: string) {
+    try {
+      await navigator.clipboard.writeText(markdown);
+      setCopiedIndex(index);
+      setTimeout(() => setCopiedIndex((current) => (current === index ? null : current)), 1500);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
+    }
   }
 
   function onKeyDown(e: KeyboardEvent<HTMLTextAreaElement>) {
@@ -347,6 +360,12 @@ export function ChatWidget({
                   >
                     {speakingIndex === i ? <StopIcon size={12} /> : <SpeakerIcon size={12} />}
                     {speakingIndex === i ? 'Parar' : 'Ouvir'}
+                  </button>
+                )}
+                {message.role === 'assistant' && message.content && (
+                  <button className="listen" title="Copiar em Markdown" onClick={() => void copy(i, message.content)}>
+                    {copiedIndex === i ? <CheckIcon size={12} /> : <CopyIcon size={12} />}
+                    {copiedIndex === i ? 'Copiado' : 'Copiar'}
                   </button>
                 )}
               </div>

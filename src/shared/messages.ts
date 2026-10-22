@@ -9,9 +9,9 @@ export type ContentRequest =
       attachments: Attachment[];
       page: PageContext;
       fields: FormField[];
-      screenshot?: string;
+      screenshots?: string[];
     }
-  | { type: 'CAPTURE_VISIBLE_TAB' }
+  | { type: 'CAPTURE_PAGE' }
   | { type: 'CHAT_CLEAR' }
   | { type: 'WIDGET_SET_OPEN'; open: boolean }
   | { type: 'WIDGET_SET_MINIMIZED'; minimized: boolean };
@@ -31,8 +31,8 @@ export type ResponseOf<R extends ContentRequest> = R extends { type: 'CHAT_GET_S
   ? TabState
   : R extends { type: 'CHAT_SEND' }
     ? ChatMessage
-    : R extends { type: 'CAPTURE_VISIBLE_TAB' }
-      ? string
+    : R extends { type: 'CAPTURE_PAGE' }
+      ? string[]
       : void;
 
 export async function sendToBackground<R extends ContentRequest>(request: R): Promise<ResponseOf<R>> {

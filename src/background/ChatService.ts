@@ -7,7 +7,7 @@ export interface SendInput {
   attachments: Attachment[];
   page: PageContext;
   fields: FormField[];
-  screenshot?: string;
+  screenshots?: string[];
 }
 
 /** Image data is too large for session storage, so persisted history keeps only the image name. */
@@ -25,7 +25,7 @@ export class ChatService {
     private readonly provider: ChatProvider,
   ) {}
 
-  async send(tabId: number, { text, attachments, page, fields, screenshot }: SendInput): Promise<ChatMessage> {
+  async send(tabId: number, { text, attachments, page, fields, screenshots }: SendInput): Promise<ChatMessage> {
     const userMessage: ChatMessage = { role: 'user', content: text, attachments };
     const state = await this.store.update(tabId, (s) => ({
       ...s,
@@ -38,7 +38,7 @@ export class ChatService {
       messages: history.map(({ role, content, attachments: a }) => ({ role, content, attachments: a })),
       page,
       fields,
-      screenshot,
+      screenshots,
     });
 
     const reply: ChatMessage = { role: 'assistant', content: response.reply, actions: response.actions };

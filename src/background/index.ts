@@ -4,6 +4,7 @@ import { SettingsAwareProvider } from '../providers/SettingsAwareProvider';
 import type { BackgroundEvent, ContentRequest, Result } from '../shared/messages';
 import { ChromeSettingsStore } from '../shared/settings';
 import { ChatService } from './ChatService';
+import { DebuggerPageCapturer } from './PageCapturer';
 import { SessionTabStateStore } from './TabStateStore';
 
 // Composition root
@@ -14,6 +15,7 @@ const provider = new SettingsAwareProvider(settings, {
   custom: new HttpBackendProvider(settings),
 });
 const chatService = new ChatService(tabStates, provider);
+const pageCapturer = new DebuggerPageCapturer();
 
 chrome.action.onClicked.addListener(async (tab) => {
   if (tab.id === undefined) return;
@@ -27,14 +29,14 @@ chrome.tabs.onRemoved.addListener((tabId) => {
   void tabStates.remove(tabId);
 });
 
-async function handle(tabId: number, windowId: number, request: ContentRequest): Promise<unknown> {
+async function handle(tabId: number, request: ContentRequest): Promise<unknown> {
   switch (request.type) {
     case 'CHAT_GET_STATE':
       return tabStates.get(tabId);
     case 'CHAT_SEND':
       return chatService.send(tabId, request);
-    case 'CAPTURE_VISIBLE_TAB':
-      return chrome.tabs.captureVisibleTab(windowId, { format: 'jpeg', quality: 70 });
+    case 'CAPTURE_PAGE':
+      return pageCapturer.capture(tabId);
     case 'CHAT_CLEAR':
       await tabStates.update(tabId, (s) => ({ ...s, messages: [] }));
       return;
@@ -51,7 +53,7 @@ chrome.runtime.onMessage.addListener((request: ContentRequest, sender, sendRespo
   const tab = sender.tab;
   if (tab?.id === undefined) return false;
 
-  handle(tab.id, tab.windowId, request)
+  handle(tab.id, request)
     .then((data): Result<unknown> => ({ ok: true, data }))
     .catch((e: unknown): Result<unknown> => ({ ok: false, error: e instanceof Error ? e.message : String(e) }))
     .then(sendResponse);
